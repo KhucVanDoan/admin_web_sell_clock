@@ -9,6 +9,9 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useWindowDimensions } from "../../common/useWindowDimensions";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfile } from "../../redux/actions/auth.action";
+import { Navigate } from "react-router";
 
 const { Header, Sider, Content } = Layout;
 
@@ -16,6 +19,13 @@ export default function Dashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [margin, setMargin] = useState(200);
   const { width } = useWindowDimensions();
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    console.log("aaaaaaaa");
+    dispatch(getProfile());
+  }, [dispatch]);
 
   useEffect(() => {
     width < 996 ? setCollapsed(true) : setCollapsed(false);
@@ -26,6 +36,8 @@ export default function Dashboard() {
     setCollapsed(!collapsed);
     !collapsed ? setMargin(80) : setMargin(200);
   };
+
+  if (!state.user) return <Navigate to="/" />;
 
   return (
     <Layout>
@@ -60,7 +72,10 @@ export default function Dashboard() {
         </Menu>
       </Sider>
       <Layout className="site-layout" style={{ marginLeft: margin }}>
-        <Header className="site-layout-background" style={{ padding: 0 }}>
+        <Header
+          className="site-layout-background"
+          style={{ padding: 0, position: "fixed", width: "100%" }}
+        >
           {React.createElement(
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
             {
@@ -72,7 +87,7 @@ export default function Dashboard() {
         <Content
           className="site-layout-background"
           style={{
-            margin: "24px 16px",
+            margin: "80px 16px",
             padding: 24,
             minHeight: 280,
           }}

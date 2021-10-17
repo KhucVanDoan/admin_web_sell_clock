@@ -1,15 +1,29 @@
 import React from "react";
 import { Form, Input, Button, Checkbox, Card } from "antd";
 import "./login.css";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../redux/actions/auth.action";
+import { Navigate } from "react-router";
 
 export default function Login() {
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state.auth);
+
   const onFinish = (values) => {
     console.log("Success:", values);
+    dispatch(
+      login({
+        phone: values.username,
+        password: values.password,
+      })
+    );
   };
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
+  if (state.user) return <Navigate to="/dashboard" />;
 
   return (
     <div
