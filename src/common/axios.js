@@ -32,8 +32,6 @@ instance.interceptors.response.use(
 
     const refreshToken = localStorage.getItem("refreshToken");
 
-    console.log(error.response);
-
     if (
       error?.response?.status === 401 &&
       refreshToken &&
@@ -43,11 +41,15 @@ instance.interceptors.response.use(
       config.retry = config.retry ? config.retry + 1 : 1;
       const response = await getTokenService({ refreshToken });
 
+      // if (response?.statusCode === 502 || response?.statusCode === 400) {
+      //   localStorage.clear();
+      //   return instance(config);
+      // }
+
       const { token } = response.data;
 
       if (token) {
         setAuthToken(token);
-        config.headers["Authorization"] = `Bearer ${token}`;
 
         window.localStorage.setItem("token", token);
 

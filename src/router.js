@@ -1,3 +1,5 @@
+import PrivateRouter from "./components/PrivateRouter";
+import NotFound from "./components/NotFound";
 import { Endpoint } from "./constants/endpoint";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
@@ -9,7 +11,11 @@ const routes = [
   },
   {
     path: Endpoint.DASHBOARD,
-    element: <Dashboard />,
+    element: <PrivateRouter component={Dashboard} />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ];
 

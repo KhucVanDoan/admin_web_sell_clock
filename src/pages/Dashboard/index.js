@@ -9,9 +9,6 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useWindowDimensions } from "../../common/useWindowDimensions";
-import { useDispatch, useSelector } from "react-redux";
-import { getProfile } from "../../redux/actions/auth.action";
-import { Navigate } from "react-router";
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,13 +16,6 @@ export default function Dashboard() {
   const [collapsed, setCollapsed] = useState(false);
   const [margin, setMargin] = useState(200);
   const { width } = useWindowDimensions();
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state.auth);
-
-  useEffect(() => {
-    console.log("aaaaaaaa");
-    dispatch(getProfile());
-  }, [dispatch]);
 
   useEffect(() => {
     width < 996 ? setCollapsed(true) : setCollapsed(false);
@@ -36,8 +26,6 @@ export default function Dashboard() {
     setCollapsed(!collapsed);
     !collapsed ? setMargin(80) : setMargin(200);
   };
-
-  if (!state.user) return <Navigate to="/" />;
 
   return (
     <Layout>

@@ -23,7 +23,7 @@ export default function Login() {
     console.log("Failed:", errorInfo);
   };
 
-  if (state.user) return <Navigate to="/dashboard" />;
+  if (state.token) return <Navigate to="/dashboard" />;
 
   return (
     <div
