@@ -41,7 +41,9 @@ export const getProfile = () => {
         user: response,
       });
     } catch (error) {
-      console.log(error?.message || error);
+      dispatch({
+        type: types.LOGOUT,
+      });
     }
   };
 };
