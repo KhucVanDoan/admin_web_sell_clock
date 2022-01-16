@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router";
 import { getProfile } from "../../redux/actions/auth.action";
-import NotAuthorized from "../NotAuthoried";
+import NotAuthorized from "../../components/NotAuthoried";
 
 export default function PrivateRouter({
   component: Component,
