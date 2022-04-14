@@ -9,6 +9,7 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useWindowDimensions } from "../../common/useWindowDimensions";
+import { Link, useMatch, useResolvedPath } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
@@ -17,6 +18,7 @@ export default function MainLayout({ children }) {
   const [margin, setMargin] = useState(200);
   const [marginRight, setMarginRight] = useState(200);
   const { width } = useWindowDimensions();
+  const [selecedKey, setSelectedKey] = useState(0);
 
   useEffect(() => {
     width < 996 ? setCollapsed(true) : setCollapsed(false);
@@ -29,6 +31,9 @@ export default function MainLayout({ children }) {
     !collapsed ? setMarginRight(80) : setMarginRight(200);
   };
 
+  // let resolved = useResolvedPath(to);
+  // let match = useMatch({ path: resolved.pathname, end: true });
+
   return (
     <Layout>
       <Sider
@@ -36,7 +41,7 @@ export default function MainLayout({ children }) {
         collapsible
         collapsed={collapsed}
         style={{
-          overflow: "auto",
+          overflow: "hidden",
           height: "100vh",
           position: "fixed",
         }}
@@ -49,15 +54,25 @@ export default function MainLayout({ children }) {
             alt="Logo"
           />
         </div>
-        <Menu theme="light" mode="inline" defaultSelectedKeys={["1"]}>
+        <Menu
+          theme="light"
+          mode="inline"
+          defaultSelectedKeys={[`${selecedKey}`]}
+        >
           <Menu.Item key="1" icon={<UserOutlined />}>
-            Quản lý abc
+            <Link to="/branch" onClick={() => setSelectedKey(1)}>
+              Quản lý hãng
+            </Link>
           </Menu.Item>
           <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-            Quản lý xyz
+            <Link to="/category" onClick={() => setSelectedKey(2)}>
+              Quản lý danh mục
+            </Link>
           </Menu.Item>
           <Menu.Item key="3" icon={<UploadOutlined />}>
-            Cài đặt
+            <Link to="/setting" onClick={() => setSelectedKey(3)}>
+              Cài đặt website
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>

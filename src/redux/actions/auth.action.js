@@ -7,7 +7,7 @@ export const login = (user) => {
     try {
       const response = await loginService(user);
 
-      if (response.statusCode !== 200) {
+      if (response.code !== 200) {
         notification.open({
           message: "Đăng nhập thất bại.",
           description: response.message,
