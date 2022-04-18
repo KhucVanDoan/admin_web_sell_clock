@@ -9,7 +9,7 @@ import {
   UploadOutlined,
 } from "@ant-design/icons";
 import { useWindowDimensions } from "../../common/useWindowDimensions";
-import { Link, useMatch, useResolvedPath } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
@@ -54,11 +54,7 @@ export default function MainLayout({ children }) {
             alt="Logo"
           />
         </div>
-        <Menu
-          theme="light"
-          mode="inline"
-          defaultSelectedKeys={[`${selecedKey}`]}
-        >
+        <Menu theme="light" mode="inline" selectedKeys={[`${selecedKey}`]}>
           <Menu.Item key="1" icon={<UserOutlined />}>
             <Link to="/branch" onClick={() => setSelectedKey(1)}>
               Quản lý hãng
@@ -79,7 +75,7 @@ export default function MainLayout({ children }) {
       <Layout className="site-layout" style={{ marginLeft: margin }}>
         <Header
           className="site-layout-background"
-          style={{ padding: 0, position: "fixed", width: "100%" }}
+          style={{ padding: 0, position: "fixed", width: "100%", zIndex: 1000 }}
         >
           {React.createElement(
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
