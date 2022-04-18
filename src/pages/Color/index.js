@@ -12,25 +12,25 @@ import {
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createCategory,
-  deleteCategory,
-  detailCategory,
-  listCategory,
-  updateCategory,
-} from "../../redux/actions/category.action";
+  createColor,
+  deleteColor,
+  detailColor,
+  listColor,
+  updateColor,
+} from "../../redux/actions/color.action";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-export default function Category() {
+export default function Color() {
   const [visible, setVisible] = useState(false);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [id, setId] = useState();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.category);
+  const state = useSelector((state) => state.color);
 
   useEffect(() => {
-    dispatch(listCategory({ page }));
+    dispatch(listColor({ page }));
   }, [dispatch, page]);
 
   const columns = [
@@ -43,35 +43,11 @@ export default function Category() {
       },
     },
     {
-      title: "Tên danh mục",
+      title: "Tên màu",
       dataIndex: "name",
       sorter: {
         compare: (a, b) => a.chinese - b.chinese,
         multiple: 3,
-      },
-    },
-    {
-      title: "Mô tả",
-      dataIndex: "description",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
-    },
-    {
-      title: "Ngày tạo",
-      dataIndex: "createdAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
-    },
-    {
-      title: "Ngày cập nhật",
-      dataIndex: "updatedAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
       },
     },
     {
@@ -85,9 +61,7 @@ export default function Category() {
               title="Bạn có muốn xoá bản ghi này?"
               onConfirm={() =>
                 dispatch(
-                  deleteCategory(item.id, () =>
-                    dispatch(listCategory({ page }))
-                  )
+                  deleteColor(item.id, () => dispatch(listColor({ page })))
                 )
               }
               okText="Có"
@@ -120,7 +94,6 @@ export default function Category() {
     form.setFieldsValue({
       name: state.item.name,
       description: state.item.description,
-      images: state.item.logo,
     });
   }, [form, state.item]);
 
@@ -134,15 +107,15 @@ export default function Category() {
     setId(id);
     setMode("UPDATE");
     setVisible(true);
-    dispatch(detailCategory(id));
+    dispatch(detailColor(id));
   };
 
   const showTitle = (mode) => {
     switch (mode) {
       case "CREATE":
-        return "Tạo mới danh mục";
+        return "Tạo mới màu sắc";
       case "UPDATE":
-        return "Cập nhật danh mục";
+        return "Cập nhật màu sắc";
       default:
         break;
     }
@@ -167,14 +140,10 @@ export default function Category() {
   const onFinish = (values) => {
     switch (mode) {
       case "CREATE":
-        dispatch(
-          createCategory(values, () => dispatch(listCategory({ page })))
-        );
+        dispatch(createColor(values, () => dispatch(listColor({ page }))));
         break;
       case "UPDATE":
-        dispatch(
-          updateCategory(id, values, () => dispatch(listCategory({ page })))
-        );
+        dispatch(updateColor(id, values, () => dispatch(listColor({ page }))));
         break;
       default:
         break;
@@ -190,7 +159,7 @@ export default function Category() {
 
   return (
     <MainLayout>
-      <h2>Danh sách danh mục</h2>
+      <h2>Danh sách màu sắc</h2>
       <Space style={{ marginBottom: 20 }}>
         <Button type="primary" onClick={showModal}>
           Tạo mới
@@ -214,16 +183,9 @@ export default function Category() {
           form={form}
         >
           <Form.Item
-            label="Tên danh mục"
+            label="Tên màu sắc"
             name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên danh mục" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Mô tả"
-            name="description"
-            rules={[{ required: false }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên màu sắc" }]}
           >
             <Input />
           </Form.Item>

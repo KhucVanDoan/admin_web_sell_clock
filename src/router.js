@@ -3,9 +3,13 @@ import { Endpoint } from "./constants/endpoint";
 import PrivateRouter from "./containers/PrivateRouter";
 import Branch from "./pages/Branch";
 import Category from "./pages/Category";
+import Color from "./pages/Color";
+import Coupon from "./pages/Coupon";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Setting from "./pages/Setting";
+import Specification from "./pages/Specification";
+import Storage from "./pages/Storage";
 
 const routes = [
   {
@@ -27,6 +31,22 @@ const routes = [
   {
     path: Endpoint.CATEGORY,
     element: <PrivateRouter component={Category} />,
+  },
+  {
+    path: Endpoint.COLOR,
+    element: <PrivateRouter component={Color} />,
+  },
+  {
+    path: Endpoint.COUPON,
+    element: <PrivateRouter component={Coupon} />,
+  },
+  {
+    path: Endpoint.STORAGE,
+    element: <PrivateRouter component={Storage} />,
+  },
+  {
+    path: Endpoint.SPECIFICATION,
+    element: <PrivateRouter component={Specification} />,
   },
   {
     path: "*",

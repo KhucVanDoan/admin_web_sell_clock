@@ -93,7 +93,7 @@ export default function MainLayout({ children }) {
           style={{
             margin: "80px 16px",
             padding: 24,
-            minHeight: 280,
+            minHeight: "70vh",
           }}
         >
           {children}

@@ -9,28 +9,29 @@ import {
   Input,
   Pagination,
   Popconfirm,
+  InputNumber,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  createCategory,
-  deleteCategory,
-  detailCategory,
-  listCategory,
-  updateCategory,
-} from "../../redux/actions/category.action";
+  createCoupon,
+  deleteCoupon,
+  detailCoupon,
+  listCoupon,
+  updateCoupon,
+} from "../../redux/actions/coupon.action";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-export default function Category() {
+export default function Coupon() {
   const [visible, setVisible] = useState(false);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [id, setId] = useState();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const state = useSelector((state) => state.category);
+  const state = useSelector((state) => state.coupon);
 
   useEffect(() => {
-    dispatch(listCategory({ page }));
+    dispatch(listCoupon({ page }));
   }, [dispatch, page]);
 
   const columns = [
@@ -43,16 +44,32 @@ export default function Category() {
       },
     },
     {
-      title: "Tên danh mục",
-      dataIndex: "name",
+      title: "Mã giảm giá",
+      dataIndex: "code",
       sorter: {
         compare: (a, b) => a.chinese - b.chinese,
         multiple: 3,
       },
     },
     {
-      title: "Mô tả",
-      dataIndex: "description",
+      title: "Số lượng",
+      dataIndex: "planQuantity",
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 3,
+      },
+    },
+    {
+      title: "Số lượng đã sử dụng",
+      dataIndex: "actualQuantity",
+      sorter: {
+        compare: (a, b) => a.chinese - b.chinese,
+        multiple: 3,
+      },
+    },
+    {
+      title: "Giảm (%)",
+      dataIndex: "value",
       sorter: {
         compare: (a, b) => a.chinese - b.chinese,
         multiple: 3,
@@ -85,9 +102,7 @@ export default function Category() {
               title="Bạn có muốn xoá bản ghi này?"
               onConfirm={() =>
                 dispatch(
-                  deleteCategory(item.id, () =>
-                    dispatch(listCategory({ page }))
-                  )
+                  deleteCoupon(item.id, () => dispatch(listCoupon({ page })))
                 )
               }
               okText="Có"
@@ -118,9 +133,9 @@ export default function Category() {
 
   useEffect(() => {
     form.setFieldsValue({
-      name: state.item.name,
-      description: state.item.description,
-      images: state.item.logo,
+      code: state.item.code,
+      planQuantity: state.item.planQuantity,
+      value: state.item.value,
     });
   }, [form, state.item]);
 
@@ -134,15 +149,15 @@ export default function Category() {
     setId(id);
     setMode("UPDATE");
     setVisible(true);
-    dispatch(detailCategory(id));
+    dispatch(detailCoupon(id));
   };
 
   const showTitle = (mode) => {
     switch (mode) {
       case "CREATE":
-        return "Tạo mới danh mục";
+        return "Tạo mới coupon";
       case "UPDATE":
-        return "Cập nhật danh mục";
+        return "Cập nhật coupon";
       default:
         break;
     }
@@ -167,13 +182,11 @@ export default function Category() {
   const onFinish = (values) => {
     switch (mode) {
       case "CREATE":
-        dispatch(
-          createCategory(values, () => dispatch(listCategory({ page })))
-        );
+        dispatch(createCoupon(values, () => dispatch(listCoupon({ page }))));
         break;
       case "UPDATE":
         dispatch(
-          updateCategory(id, values, () => dispatch(listCategory({ page })))
+          updateCoupon(id, values, () => dispatch(listCoupon({ page })))
         );
         break;
       default:
@@ -190,7 +203,7 @@ export default function Category() {
 
   return (
     <MainLayout>
-      <h2>Danh sách danh mục</h2>
+      <h2>Danh sách mã giảm giá</h2>
       <Space style={{ marginBottom: 20 }}>
         <Button type="primary" onClick={showModal}>
           Tạo mới
@@ -214,20 +227,40 @@ export default function Category() {
           form={form}
         >
           <Form.Item
-            label="Tên danh mục"
-            name="name"
-            rules={[{ required: true, message: "Vui lòng nhập tên danh mục" }]}
+            label="Code"
+            name="code"
+            rules={[{ required: true, message: "Vui lòng nhập mã giảm giá" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            label="Mô tả"
-            name="description"
-            rules={[{ required: false }]}
+            label="Số lượng"
+            name="planQuantity"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập số lượng",
+                type: "number",
+                min: 1,
+              },
+            ]}
           >
-            <Input />
+            <InputNumber />
           </Form.Item>
-
+          <Form.Item
+            label="Giá trị"
+            name="value"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập giá trị",
+                type: "number",
+                min: 0,
+              },
+            ]}
+          >
+            <InputNumber />
+          </Form.Item>
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
               {showLableButton(mode)}
