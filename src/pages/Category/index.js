@@ -19,6 +19,7 @@ import {
   updateCategory,
 } from "../../redux/actions/category.action";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { formatTime } from "../../common/common";
 
 export default function Category() {
   const [visible, setVisible] = useState(false);
@@ -65,6 +66,7 @@ export default function Category() {
         compare: (a, b) => a.english - b.english,
         multiple: 1,
       },
+      render: (record) => formatTime(record),
     },
     {
       title: "Ngày cập nhật",
@@ -73,6 +75,7 @@ export default function Category() {
         compare: (a, b) => a.english - b.english,
         multiple: 1,
       },
+      render: (record) => formatTime(record),
     },
     {
       title: "Hành động",

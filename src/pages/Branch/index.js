@@ -24,6 +24,7 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
+import { formatTime } from "../../common/common";
 
 export default function Branch() {
   const [visible, setVisible] = useState(false);
@@ -71,6 +72,7 @@ export default function Branch() {
         compare: (a, b) => a.english - b.english,
         multiple: 1,
       },
+      render: (record) => formatTime(record),
     },
     {
       title: "Ngày cập nhật",
@@ -79,6 +81,7 @@ export default function Branch() {
         compare: (a, b) => a.english - b.english,
         multiple: 1,
       },
+      render: (record) => formatTime(record),
     },
     {
       title: "Hành động",
@@ -141,6 +144,7 @@ export default function Branch() {
   const showModal = () => {
     form.resetFields();
     setMode("CREATE");
+    setImages([]);
     setVisible(true);
   };
 
@@ -255,7 +259,7 @@ export default function Branch() {
           <Form.Item label="Ảnh đại điện" name="images">
             <Upload
               {...props}
-              fileList={mode === "UPDATE" ? images : []}
+              fileList={images}
               onChange={onChangeFileList}
               maxCount={1}
             >

@@ -7,6 +7,7 @@ import Color from "./pages/Color";
 import Coupon from "./pages/Coupon";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Product from "./pages/Product";
 import Setting from "./pages/Setting";
 import Specification from "./pages/Specification";
 import Storage from "./pages/Storage";
@@ -47,6 +48,10 @@ const routes = [
   {
     path: Endpoint.SPECIFICATION,
     element: <PrivateRouter component={Specification} />,
+  },
+  {
+    path: Endpoint.PRODUCT,
+    element: <PrivateRouter component={Product} />,
   },
   {
     path: "*",

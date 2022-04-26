@@ -20,6 +20,7 @@ import {
   updateCoupon,
 } from "../../redux/actions/coupon.action";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { formatTime } from "../../common/common";
 
 export default function Coupon() {
   const [visible, setVisible] = useState(false);
@@ -82,6 +83,7 @@ export default function Coupon() {
         compare: (a, b) => a.english - b.english,
         multiple: 1,
       },
+      render: (record) => formatTime(record),
     },
     {
       title: "Ngày cập nhật",
@@ -90,6 +92,7 @@ export default function Coupon() {
         compare: (a, b) => a.english - b.english,
         multiple: 1,
       },
+      render: (record) => formatTime(record),
     },
     {
       title: "Hành động",
