@@ -7,10 +7,12 @@ import Color from "./pages/Color";
 import Coupon from "./pages/Coupon";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Order from "./pages/Order";
 import Product from "./pages/Product";
 import Setting from "./pages/Setting";
 import Specification from "./pages/Specification";
 import Storage from "./pages/Storage";
+import User from "./pages/User";
 
 const routes = [
   {
@@ -52,6 +54,14 @@ const routes = [
   {
     path: Endpoint.PRODUCT,
     element: <PrivateRouter component={Product} />,
+  },
+  {
+    path: Endpoint.USER,
+    element: <PrivateRouter component={User} />,
+  },
+  {
+    path: Endpoint.ORDER,
+    element: <PrivateRouter component={Order} />,
   },
   {
     path: "*",

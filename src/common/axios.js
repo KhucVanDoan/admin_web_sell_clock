@@ -5,7 +5,7 @@ import { getTokenService } from "../service/auth.service";
 import setAuthToken from "./setAuthToken";
 
 const instance = Axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${BASE_URL}/api`,
 });
 
 instance.interceptors.request.use(

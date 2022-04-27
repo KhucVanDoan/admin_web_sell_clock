@@ -11,4 +11,6 @@ export const APIEnum = {
   SPECIFICATION: "/specification",
   SETTING: "/setting",
   PRODUCT: "/product",
+  USER: "/user",
+  ORDER: "/order",
 };

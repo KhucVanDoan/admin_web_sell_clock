@@ -19,9 +19,9 @@ export default function Setting() {
 
   useEffect(() => {
     form.setFieldsValue({
-      title: state.item.title,
-      description: state.item.description,
-      keyword: state.item.keyword,
+      title: state.item?.title,
+      description: state.item?.description,
+      keyword: state.item?.keyword,
     });
   }, [form, state]);
 

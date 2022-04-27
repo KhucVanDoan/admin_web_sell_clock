@@ -37,6 +37,7 @@ import {
 import { listColor } from "../../redux/actions/color.action";
 import { listStorage } from "../../redux/actions/storage.action";
 import { listSpecification } from "../../redux/actions/specification.action";
+import { BASE_URL } from "../../constants/config";
 
 const { Option } = Select;
 
@@ -68,7 +69,7 @@ export default function Product() {
       },
     },
     {
-      title: "Tên thương hiệu",
+      title: "Tên sản phẩm",
       dataIndex: "name",
       sorter: {
         compare: (a, b) => a.chinese - b.chinese,
@@ -76,8 +77,8 @@ export default function Product() {
       },
     },
     {
-      title: "Mô tả",
-      dataIndex: "description",
+      title: "Mô tả ngắn",
+      dataIndex: "shortDescription",
       sorter: {
         compare: (a, b) => a.math - b.math,
         multiple: 2,
@@ -153,28 +154,28 @@ export default function Product() {
       name: state.product.item.name,
       description: state.product.item.description,
       shortDescription: state.product.item.shortDescription,
-      categoryId: state.product.item.category.id,
-      branchId: state.product.item.branch.id,
-      productVersions: state.product.item.productVersions.map((e) => ({
+      categoryId: state.product.item?.category?.id,
+      branchId: state.product.item?.branch?.id,
+      productVersions: state.product.item?.productVersions?.map((e) => ({
         storageId: e.storage.id,
         colorId: e.color.id,
         price: e.price,
         salePrice: e.salePrice,
         quantity: e.quantity,
       })),
-      specificationDetails: state.product.item.specifications.map((e) => ({
+      specificationDetails: state.product.item?.specifications?.map((e) => ({
         specificationId: e.specificationId,
         content: e.content,
       })),
     });
 
     setFileList(
-      state.product.item.productImages.map((e) => ({
+      state.product.item?.productImages?.map((e) => ({
         uid: e.id,
         name: e.url,
         status: "done",
-        url: `http://localhost:5000/${e.url}`,
-        thumbUrl: `http://localhost:5000/${e.url}`,
+        url: `${BASE_URL}/${e.url}`,
+        thumbUrl: `${BASE_URL}/${e.url}`,
       }))
     );
   }, [form, state.product.item]);
@@ -191,6 +192,11 @@ export default function Product() {
   };
 
   const showModalUpdate = (id) => {
+    dispatch(listCategory({ page }));
+    dispatch(listBranch({ page }));
+    dispatch(listColor({ page }));
+    dispatch(listStorage({ page }));
+    dispatch(listSpecification({ page }));
     setId(id);
     setMode("UPDATE");
     setVisible(true);
@@ -240,6 +246,9 @@ export default function Product() {
         dispatch(createProduct(values, () => dispatch(listProduct({ page }))));
         break;
       case "UPDATE":
+        if (!values.images?.length) {
+          values.images = { fileList };
+        }
         dispatch(
           updateProduct(id, values, () => dispatch(listProduct({ page })))
         );
@@ -386,14 +395,14 @@ export default function Product() {
                 wrapperCol={{ span: 20 }}
               >
                 <Upload
-                  action="http://localhost:5000/api/branch/haha"
+                  action={`${BASE_URL}/api`}
                   listType="picture-card"
                   fileList={fileList}
                   onPreview={handlePreview}
                   onChange={handleChange}
                   preview
                 >
-                  {fileList.length >= 8 ? null : (
+                  {fileList?.length >= 8 ? null : (
                     <div>
                       <PlusOutlined />
                       <div style={{ marginTop: 8 }}>Upload</div>
@@ -738,7 +747,7 @@ export default function Product() {
                   <Col span={6}>Thông số</Col>
                   <Col span={6}>Giá trị</Col>
                 </Row>
-                {state.product.item?.specifications.map((e) => (
+                {state.product.item?.specifications?.map((e) => (
                   <Row gutter={[16, 16]}>
                     <Col span={6}>{e.name}</Col>
                     <Col span={6}>{e.content}</Col>

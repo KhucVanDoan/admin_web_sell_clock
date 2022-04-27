@@ -9,6 +9,8 @@ export const Endpoint = {
   STORAGE: "/storage",
   SPECIFICATION: "/specification",
   PRODUCT: "/product",
+  USER: "/user",
+  ORDER: "/order",
 };
 
 export const routers = [
@@ -38,11 +40,19 @@ export const routers = [
   },
   {
     endpoint: Endpoint.SPECIFICATION,
-    text: "Quản lý thông số kỹ thuật",
+    text: "Quản lý thông số",
   },
   {
     endpoint: Endpoint.COUPON,
     text: "Quản lý mã giảm giá",
+  },
+  {
+    endpoint: Endpoint.USER,
+    text: "Quản lý người dùng",
+  },
+  {
+    endpoint: Endpoint.ORDER,
+    text: "Quản lý đơn hàng",
   },
   {
     endpoint: Endpoint.SETTING,

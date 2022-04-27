@@ -13,14 +13,20 @@ import {
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  confirmCoupon,
   createCoupon,
   deleteCoupon,
   detailCoupon,
   listCoupon,
   updateCoupon,
 } from "../../redux/actions/coupon.action";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  CheckSquareOutlined,
+} from "@ant-design/icons";
 import { formatTime } from "../../common/common";
+import { CouponStatusEnum } from "./coupon-status.constant";
 
 export default function Coupon() {
   const [visible, setVisible] = useState(false);
@@ -99,7 +105,7 @@ export default function Coupon() {
       dataIndex: "",
       key: "id",
       render: (item) => {
-        return (
+        return item.status === CouponStatusEnum.WaitingConfirm ? (
           <>
             <Popconfirm
               title="Bạn có muốn xoá bản ghi này?"
@@ -118,6 +124,20 @@ export default function Coupon() {
                 }}
               />
             </Popconfirm>
+
+            <Popconfirm
+              title="Bạn có muốn thay đổi trạng thái?"
+              onConfirm={() => handleConfirmCoupon(item)}
+              okText="Có"
+              cancelText="Không"
+            >
+              <CheckSquareOutlined
+                style={{
+                  cursor: "pointer",
+                  paddingRight: 10,
+                }}
+              />
+            </Popconfirm>
             <EditOutlined
               style={{
                 cursor: "pointer",
@@ -125,11 +145,15 @@ export default function Coupon() {
               onClick={() => showModalUpdate(item.id)}
             />
           </>
+        ) : (
+          <>Đã xác nhận</>
         );
       },
     },
   ];
-
+  const handleConfirmCoupon = (item) => {
+    dispatch(confirmCoupon(item.id, () => dispatch(listCoupon({ page }))));
+  };
   const onChange = (page) => {
     setPage(page);
   };

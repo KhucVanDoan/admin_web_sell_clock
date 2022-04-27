@@ -16,6 +16,7 @@ export const listProduct = (query) => {
         type: types.LIST_PRODUCT,
         data: response.data,
       });
+      console.log("hahahah");
     } catch (error) {
       console.log(error?.message || error);
       notification.open({
@@ -40,9 +41,13 @@ export const createProduct = (data, cb) => {
         "specificationDetails",
         JSON.stringify(data.specificationDetails)
       );
+      const keepImages = [];
       data.images.fileList.forEach((e) => {
-        form.append("images", e.originFileObj);
+        if (e.originFileObj) form.append("images", e.originFileObj);
+        else keepImages.push(e.name);
       });
+      form.append("keepImages", keepImages);
+
       const response = await create(form);
 
       if (response.statusCode !== 201) {
@@ -70,11 +75,25 @@ export const createProduct = (data, cb) => {
 export const updateProduct = (id, data, cb) => {
   return async (dispatch) => {
     try {
+      console.log("data.images", data.images);
       const form = new FormData();
       form.append("name", data.name);
       form.append("description", data.description);
-      if (data.images?.file?.originFileObj)
-        form.append("images", data.images.file.originFileObj);
+      form.append("shortDescription", data.shortDescription);
+      form.append("branchId", data.branchId);
+      form.append("categoryId", data.categoryId);
+      form.append("productVersions", JSON.stringify(data.productVersions));
+      form.append(
+        "specificationDetails",
+        JSON.stringify(data.specificationDetails)
+      );
+      const keepImages = [];
+      data.images?.fileList?.forEach((e) => {
+        if (e.originFileObj) form.append("images", e.originFileObj);
+        else keepImages.push(e.name);
+      });
+      form.append("keepImages", keepImages);
+
       const response = await update(id, form);
 
       if (response.statusCode !== 200) {

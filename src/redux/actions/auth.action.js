@@ -38,7 +38,7 @@ export const getProfile = () => {
 
       dispatch({
         type: types.GET_PROFILE,
-        user: response,
+        user: response.data,
       });
     } catch (error) {
       dispatch({

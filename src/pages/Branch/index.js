@@ -25,6 +25,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { formatTime } from "../../common/common";
+import { BASE_URL } from "../../constants/config";
 
 export default function Branch() {
   const [visible, setVisible] = useState(false);
@@ -135,8 +136,8 @@ export default function Branch() {
         uid: "-1",
         name: state.item.logo,
         status: "done",
-        url: `http://localhost:5000/${state.item.logo}`,
-        thumbUrl: `http://localhost:5000/${state.item.logo}`,
+        url: `${BASE_URL}/${state.item.logo}`,
+        thumbUrl: `${BASE_URL}/${state.item.logo}`,
       },
     ]);
   }, [form, state.item]);
@@ -209,7 +210,7 @@ export default function Branch() {
   };
 
   const props = {
-    action: "http://localhost:5000/api/branch/haha",
+    action: `${BASE_URL}/api`,
     listType: "picture",
     beforeUpload(file) {
       return new Promise((resolve) => {

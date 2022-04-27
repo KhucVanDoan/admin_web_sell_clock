@@ -11,8 +11,13 @@ export function getBase64(file) {
   });
 }
 
-export const formatMoney = (input) =>
+export const formatMoney = (input = 0) =>
   input.toLocaleString("it-IT", {
     style: "currency",
     currency: "VND",
   });
+
+export const ROLE = {
+  USER: 0,
+  ADMIN: 1,
+};

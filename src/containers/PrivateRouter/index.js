@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router";
 import { getProfile } from "../../redux/actions/auth.action";
 import NotAuthorized from "../../components/NotAuthoried";
+import { ROLE } from "../../common/common";
 
 export default function PrivateRouter({
   component: Component,
-  roles = [],
+  roles = [ROLE.ADMIN],
   ...rest
 }) {
   const state = useSelector((state) => state.auth);
@@ -19,7 +20,10 @@ export default function PrivateRouter({
   }, [dispatch]);
 
   if (state.token) {
-    if (roles.length && !roles.includes(state?.user?.role))
+    if (
+      (roles.length && !roles.includes(state?.user?.role)) ||
+      state?.user?.isActive === 0
+    )
       return <NotAuthorized />;
     return <Component {...rest} />;
   } else {
