@@ -1,4 +1,5 @@
 import "./App.css";
+import "braft-editor/dist/index.css";
 import { useStore } from "./redux/store";
 import { Provider } from "react-redux";
 import routes from "./router";

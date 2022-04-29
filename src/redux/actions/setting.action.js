@@ -5,7 +5,18 @@ import * as types from "../constants";
 export const updateSetting = (data, cb) => {
   return async (dispatch) => {
     try {
-      const response = await update(data);
+      const form = new FormData();
+      form.append("title", data.title);
+      form.append("description", data.description);
+      form.append("keyword", data.keyword);
+      const keepImages = [];
+      data.images?.fileList?.forEach((e) => {
+        if (e.originFileObj) form.append("images", e.originFileObj);
+        else keepImages.push(e.name);
+      });
+      form.append("keepImages", keepImages);
+
+      const response = await update(form);
 
       if (response.statusCode !== 200) {
         notification.open({

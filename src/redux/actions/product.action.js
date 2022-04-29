@@ -75,7 +75,6 @@ export const createProduct = (data, cb) => {
 export const updateProduct = (id, data, cb) => {
   return async (dispatch) => {
     try {
-      console.log("data.images", data.images);
       const form = new FormData();
       form.append("name", data.name);
       form.append("description", data.description);

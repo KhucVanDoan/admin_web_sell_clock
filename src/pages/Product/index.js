@@ -38,6 +38,8 @@ import { listColor } from "../../redux/actions/color.action";
 import { listStorage } from "../../redux/actions/storage.action";
 import { listSpecification } from "../../redux/actions/specification.action";
 import { BASE_URL } from "../../constants/config";
+import BraftEditor from "braft-editor";
+import parse from "html-react-parser";
 
 const { Option } = Select;
 
@@ -58,6 +60,17 @@ export default function Product() {
   useEffect(() => {
     dispatch(listProduct({ page }));
   }, [dispatch, page]);
+
+  const controls = [
+    "bold",
+    "italic",
+    "underline",
+    "text-color",
+    "separator",
+    "link",
+    "separator",
+    "media",
+  ];
 
   const columns = [
     {
@@ -152,7 +165,9 @@ export default function Product() {
   useEffect(() => {
     form.setFieldsValue({
       name: state.product.item.name,
-      description: state.product.item.description,
+      description: BraftEditor.createEditorState(
+        state.product.item.description
+      ),
       shortDescription: state.product.item.shortDescription,
       categoryId: state.product.item?.category?.id,
       branchId: state.product.item?.branch?.id,
@@ -243,14 +258,23 @@ export default function Product() {
   const onFinish = (values) => {
     switch (mode) {
       case "CREATE":
-        dispatch(createProduct(values, () => dispatch(listProduct({ page }))));
+        dispatch(
+          createProduct(
+            { ...values, description: values.description.toHTML() },
+            () => dispatch(listProduct({ page }))
+          )
+        );
         break;
       case "UPDATE":
         if (!values.images?.length) {
           values.images = { fileList };
         }
         dispatch(
-          updateProduct(id, values, () => dispatch(listProduct({ page })))
+          updateProduct(
+            id,
+            { ...values, description: values.description.toHTML() },
+            () => dispatch(listProduct({ page }))
+          )
         );
         break;
       default:
@@ -430,7 +454,12 @@ export default function Product() {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 20 }}
               >
-                <Input.TextArea rows={4} />
+                <BraftEditor
+                  language={"vi-vn"}
+                  className="my-editor"
+                  controls={controls}
+                  placeholder="Nhập mô tả"
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -707,7 +736,7 @@ export default function Product() {
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 20 }}
               >
-                {state.product.item?.description}
+                {parse(state.product.item?.description || "")}
               </Form.Item>
             </Col>
           </Row>
