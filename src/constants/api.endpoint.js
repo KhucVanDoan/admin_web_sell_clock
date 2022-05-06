@@ -5,12 +5,9 @@ export const APIEnum = {
   GET_TOKEN: "/auth/token",
   BRANCH: "/branch",
   CATEGORY: "/category",
-  COLOR: "/color",
   COUPON: "/coupon",
-  STORAGE: "/storage",
   SPECIFICATION: "/specification",
-  SETTING: "/setting",
-  PRODUCT: "/product",
+  PRODUCT: "/item",
   USER: "/user",
   ORDER: "/order",
 };

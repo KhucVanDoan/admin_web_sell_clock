@@ -55,7 +55,7 @@ export default function MainLayout({ children }) {
           <img
             height="100%"
             width="100%"
-            src="https://upload.wikimedia.org/wikipedia/vi/thumb/8/8d/The_gioi_di_dong_logo.svg/768px-The_gioi_di_dong_logo.svg.png"
+            src="https://xwatch.vn/images/config/logo-xwatch-216-62_1616143160.png"
             alt="Logo"
           />
         </div>

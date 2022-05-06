@@ -45,43 +45,25 @@ export default function Branch() {
     {
       title: "ID",
       dataIndex: "id",
-      sorter: {
-        compare: (a, b) => a - b,
-        multiple: 10,
-      },
     },
     {
       title: "Tên thương hiệu",
       dataIndex: "name",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Mô tả",
       dataIndex: "description",
-      sorter: {
-        compare: (a, b) => a.math - b.math,
-        multiple: 2,
-      },
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
+
       render: (record) => formatTime(record),
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updatedAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
+
       render: (record) => formatTime(record),
     },
     {

@@ -30,51 +30,30 @@ export default function Order() {
     {
       title: "ID",
       dataIndex: "id",
-      sorter: {
-        compare: (a, b) => a - b,
-        multiple: 10,
-      },
     },
     {
       title: "Người mua",
       dataIndex: "user",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
+
       render: (record) => record.fullname,
     },
     {
       title: "Số điện thoại",
       dataIndex: "phone",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Địa chỉ",
       dataIndex: "address",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
+
       render: (record) => OrderStatus[record],
     },
     {
       title: "Tổng giá trị",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
+
       render: (record) => {
         const totalMoney = record.orderDetails.reduce((total, item) => {
           return (
@@ -90,19 +69,11 @@ export default function Order() {
     {
       title: "Tổng số lượng",
       dataIndex: "orderDetails",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
       render: (record) => `${record.length} sản phẩm`,
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
       render: (record) => formatTime(record),
     },
     {
@@ -176,14 +147,6 @@ export default function Order() {
         compare: (a, b) => a.chinese - b.chinese,
         multiple: 3,
       },
-    },
-    {
-      title: "Phiên bản",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
-      render: (record) => `${record.color?.name} - ${record.storage?.name}`,
     },
     {
       title: "Giá",

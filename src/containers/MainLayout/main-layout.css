@@ -28,6 +28,7 @@
 .logo {
   height: 60px;
   padding: 5px;
+  background-color: black;
 }
 
 .site-layout .site-layout-background {

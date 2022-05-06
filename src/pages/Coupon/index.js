@@ -45,59 +45,33 @@ export default function Coupon() {
     {
       title: "ID",
       dataIndex: "id",
-      sorter: {
-        compare: (a, b) => a - b,
-        multiple: 10,
-      },
     },
     {
       title: "Mã giảm giá",
       dataIndex: "code",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Số lượng",
       dataIndex: "planQuantity",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Số lượng đã sử dụng",
       dataIndex: "actualQuantity",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Giảm (%)",
       dataIndex: "value",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
+
       render: (record) => formatTime(record),
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updatedAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
+
       render: (record) => formatTime(record),
     },
     {

@@ -29,7 +29,7 @@ export default function Login() {
     <div
       className="login-page"
       style={{
-        backgroundImage: `url('https://www.utihouse.com/wp-content/uploads/2015/10/Thi%E1%BA%BFt-k%E1%BA%BF-shop-%C4%91i%E1%BB%87n-tho%E1%BA%A1i-13.jpg')`,
+        backgroundImage: `url('https://png.pngtree.com/background/20210710/original/pngtree-quartz-watch-promotion-season-atmospheric-black-banner-picture-image_1047997.jpg')`,
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         backgroundSize: "cover",
@@ -38,12 +38,16 @@ export default function Login() {
       <Card className="login-form">
         <div className="header">
           <img
-            src="https://upload.wikimedia.org/wikipedia/vi/thumb/8/8d/The_gioi_di_dong_logo.svg/768px-The_gioi_di_dong_logo.svg.png"
+            src="https://xwatch.vn/images/config/logo-xwatch-216-62_1616143160.png"
             height="48px"
             alt="Đăng nhập"
+            style={{
+              backgroundColor: "black",
+              width: "300px",
+              height: "60px",
+            }}
           />
-          <h1>ĐĂNG NHẬP HỆ THỐNG</h1>
-          <p>Trang dành cho quản trị viên</p>
+          <h1>ĐĂNG NHẬP</h1>
         </div>
         <Form
           name="basic"

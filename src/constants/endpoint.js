@@ -31,14 +31,6 @@ export const routers = [
     text: "Quản lý sản phẩm",
   },
   {
-    endpoint: Endpoint.COLOR,
-    text: "Quản lý màu sắc",
-  },
-  {
-    endpoint: Endpoint.STORAGE,
-    text: "Quản lý bộ nhớ",
-  },
-  {
     endpoint: Endpoint.SPECIFICATION,
     text: "Quản lý thông số",
   },
@@ -53,9 +45,5 @@ export const routers = [
   {
     endpoint: Endpoint.ORDER,
     text: "Quản lý đơn hàng",
-  },
-  {
-    endpoint: Endpoint.SETTING,
-    text: "Cài đặt website",
   },
 ];

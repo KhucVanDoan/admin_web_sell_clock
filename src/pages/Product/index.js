@@ -76,43 +76,25 @@ export default function Product() {
     {
       title: "ID",
       dataIndex: "id",
-      sorter: {
-        compare: (a, b) => a - b,
-        multiple: 10,
-      },
     },
     {
       title: "Tên sản phẩm",
       dataIndex: "name",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Mô tả ngắn",
       dataIndex: "shortDescription",
-      sorter: {
-        compare: (a, b) => a.math - b.math,
-        multiple: 2,
-      },
     },
     {
       title: "Ngày tạo",
       dataIndex: "createdAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
+
       render: (record) => formatTime(record),
     },
     {
       title: "Ngày cập nhật",
       dataIndex: "updatedAt",
-      sorter: {
-        compare: (a, b) => a.english - b.english,
-        multiple: 1,
-      },
+
       render: (record) => formatTime(record),
     },
     {
@@ -168,16 +150,11 @@ export default function Product() {
       description: BraftEditor.createEditorState(
         state.product.item.description
       ),
-      shortDescription: state.product.item.shortDescription,
       categoryId: state.product.item?.category?.id,
       branchId: state.product.item?.branch?.id,
-      productVersions: state.product.item?.productVersions?.map((e) => ({
-        storageId: e.storage.id,
-        colorId: e.color.id,
-        price: e.price,
-        salePrice: e.salePrice,
-        quantity: e.quantity,
-      })),
+      price: state?.product.item?.price,
+      salePrice: state?.product.item?.salePrice,
+      stockQuantity: state?.product.item?.stockQuantity,
       specificationDetails: state.product.item?.specifications?.map((e) => ({
         specificationId: e.specificationId,
         content: e.content,
@@ -185,7 +162,7 @@ export default function Product() {
     });
 
     setFileList(
-      state.product.item?.productImages?.map((e) => ({
+      state.product.item?.itemImages?.map((e) => ({
         uid: e.id,
         name: e.url,
         status: "done",
@@ -198,8 +175,6 @@ export default function Product() {
   const showModal = () => {
     dispatch(listCategory({ page }));
     dispatch(listBranch({ page }));
-    dispatch(listColor({ page }));
-    dispatch(listStorage({ page }));
     dispatch(listSpecification({ page }));
     form.resetFields();
     setMode("CREATE");
@@ -209,8 +184,6 @@ export default function Product() {
   const showModalUpdate = (id) => {
     dispatch(listCategory({ page }));
     dispatch(listBranch({ page }));
-    dispatch(listColor({ page }));
-    dispatch(listStorage({ page }));
     dispatch(listSpecification({ page }));
     setId(id);
     setMode("UPDATE");
@@ -260,7 +233,7 @@ export default function Product() {
       case "CREATE":
         dispatch(
           createProduct(
-            { ...values, description: values.description.toHTML() },
+            { ...values, description: values.description?.toHTML() },
             () => dispatch(listProduct({ page }))
           )
         );
@@ -405,7 +378,38 @@ export default function Product() {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Mô tả ngắn" name="shortDescription">
+              <Form.Item
+                label="Giá sản phẩm"
+                name="price"
+                rules={[
+                  { required: true, message: "Vui lòng nhập giá sản phẩm" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Giá khuyến mãi"
+                name="salePrice"
+                rules={[
+                  { required: true, message: "Vui lòng nhập giá khuyến mãi" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Số lượng"
+                name="stockQuantity"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập số lượng sản phẩm",
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </Col>
@@ -465,135 +469,6 @@ export default function Product() {
           </Row>
 
           <Row gutter={[16, 16]}>
-            <Col span={24}>
-              <Form.Item
-                label="Phiên bản"
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 20 }}
-                required={true}
-              >
-                <Form.List name="productVersions">
-                  {(fields, { add, remove }) => (
-                    <>
-                      {fields.map(({ key, name, ...restField }) => (
-                        <Space
-                          key={key}
-                          style={{ display: "flex", marginBottom: 8 }}
-                          align="baseline"
-                        >
-                          <Form.Item
-                            name={[name, "storageId"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng chọn bộ nhớ",
-                              },
-                            ]}
-                          >
-                            <Select
-                              showSearch
-                              placeholder="Chọn bộ nhớ"
-                              optionFilterProp="children"
-                              onChange={onChangeCategory}
-                              onSearch={onSearch}
-                              filterOption={(input, option) =>
-                                option.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              }
-                            >
-                              {state.storage.items?.length
-                                ? state.storage.items.map((item) => (
-                                    <Option value={item.id}>{item.name}</Option>
-                                  ))
-                                : []}
-                            </Select>
-                          </Form.Item>
-                          <Form.Item
-                            name={[name, "colorId"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng chọn màu sắc",
-                              },
-                            ]}
-                          >
-                            <Select
-                              showSearch
-                              placeholder="Chọn màu sắc"
-                              optionFilterProp="children"
-                              onChange={onChangeCategory}
-                              onSearch={onSearch}
-                              filterOption={(input, option) =>
-                                option.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              }
-                            >
-                              {state.color.items?.length
-                                ? state.color.items.map((item) => (
-                                    <Option value={item.id}>{item.name}</Option>
-                                  ))
-                                : []}
-                            </Select>
-                          </Form.Item>
-                          <Form.Item
-                            name={[name, "price"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập giá gốc",
-                                type: "number",
-                                min: 1,
-                              },
-                            ]}
-                          >
-                            <InputNumber placeholder="Giá gốc" />
-                          </Form.Item>
-                          <Form.Item
-                            name={[name, "salePrice"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập giá thực tế",
-                                type: "number",
-                                min: 1,
-                              },
-                            ]}
-                          >
-                            <InputNumber wr placeholder="Giá thực tế" />
-                          </Form.Item>
-                          <Form.Item
-                            name={[name, "quantity"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Vui lòng nhập số lượng",
-                                type: "number",
-                                min: 1,
-                              },
-                            ]}
-                          >
-                            <InputNumber placeholder="Số lượng" />
-                          </Form.Item>
-                          <MinusCircleOutlined onClick={() => remove(name)} />
-                        </Space>
-                      ))}
-                      <Form.Item>
-                        <Button
-                          type="dashed"
-                          onClick={() => add()}
-                          block
-                          icon={<PlusOutlined />}
-                        >
-                          Thêm phiên bản
-                        </Button>
-                      </Form.Item>
-                    </>
-                  )}
-                </Form.List>
-              </Form.Item>
-            </Col>
             <Col span={24}>
               <Form.Item
                 label="Thông số kỹ thuật"
@@ -696,8 +571,18 @@ export default function Product() {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Mô tả ngắn" name="shortDescription">
-                {state.product.item?.shortDescription}
+              <Form.Item label="Giá sản phẩm" name="price">
+                {formatMoney(state.product.item?.price)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Giá khuyến mại" name="salePrice">
+                {formatMoney(+state.product.item?.salePrice)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Số lượng" name="quantity">
+                {state.product.item?.stockQuantity}
               </Form.Item>
             </Col>
           </Row>
@@ -742,29 +627,6 @@ export default function Product() {
           </Row>
 
           <Row gutter={[16, 16]}>
-            <Col span={24}>
-              <Form.Item
-                label="Phiên bản"
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 20 }}
-                required={true}
-              >
-                <Tabs defaultActiveKey="0">
-                  {state.product.item?.productVersions?.map((e, i) => (
-                    <Tabs.TabPane
-                      tab={`${e.storage.name} - ${e.color.name}`}
-                      key={i.toString()}
-                    >
-                      {`Giá gốc: ${formatMoney(
-                        e?.price
-                      )} - Giá sale: ${formatMoney(e.salePrice)} - SL còn: ${
-                        e.quantity
-                      } chiếc`}
-                    </Tabs.TabPane>
-                  ))}
-                </Tabs>
-              </Form.Item>
-            </Col>
             <Col span={24}>
               <Form.Item
                 label="Thông số kỹ thuật"
