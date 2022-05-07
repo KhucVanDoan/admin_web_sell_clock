@@ -34,8 +34,6 @@ import {
   listProduct,
   updateProduct,
 } from "../../redux/actions/product.action";
-import { listColor } from "../../redux/actions/color.action";
-import { listStorage } from "../../redux/actions/storage.action";
 import { listSpecification } from "../../redux/actions/specification.action";
 import { BASE_URL } from "../../constants/config";
 import BraftEditor from "braft-editor";
@@ -46,6 +44,7 @@ const { Option } = Select;
 export default function Product() {
   const [visible, setVisible] = useState(false);
   const [visibleDetail, setVisibleDetail] = useState(false);
+  const [visibleDelete, setVisibleDelete] = useState(false);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [id, setId] = useState();
@@ -82,8 +81,14 @@ export default function Product() {
       dataIndex: "name",
     },
     {
-      title: "Mô tả ngắn",
-      dataIndex: "shortDescription",
+      title: "Danh mục",
+      dataIndex: "category",
+      render: (record) => record?.name,
+    },
+    {
+      title: "Giá sản phẩm",
+      dataIndex: "price",
+      render: (record) => formatMoney(record),
     },
     {
       title: "Ngày tạo",
@@ -111,23 +116,15 @@ export default function Product() {
               }}
               onClick={() => showModalDetail(item.id)}
             />
-            <Popconfirm
-              title="Bạn có muốn xoá bản ghi này?"
-              onConfirm={() =>
-                dispatch(
-                  deleteProduct(item.id, () => dispatch(listProduct({ page })))
-                )
-              }
-              okText="Có"
-              cancelText="Không"
-            >
-              <DeleteOutlined
-                style={{
-                  cursor: "pointer",
-                  paddingRight: 10,
-                }}
-              />
-            </Popconfirm>
+
+            <DeleteOutlined
+              style={{
+                cursor: "pointer",
+                paddingRight: 10,
+              }}
+              onClick={() => onClickDelete(item?.id)}
+            />
+
             <EditOutlined
               style={{
                 cursor: "pointer",
@@ -171,7 +168,10 @@ export default function Product() {
       }))
     );
   }, [form, state.product.item]);
-
+  const onClickDelete = (id) => {
+    setVisibleDelete(true);
+    setId(id);
+  };
   const showModal = () => {
     dispatch(listCategory({ page }));
     dispatch(listBranch({ page }));
@@ -225,6 +225,7 @@ export default function Product() {
   const handleCancel = () => {
     setVisible(false);
     setVisibleDetail(false);
+    setVisibleDelete(false);
     form.resetFields();
   };
 
@@ -264,7 +265,14 @@ export default function Product() {
   };
 
   const handleChange = ({ fileList }) => setFileList(fileList);
-
+  const confirmDelete = () => {
+    dispatch(
+      deleteProduct(id, () => {
+        dispatch(listProduct({ page }));
+        setVisibleDelete(false);
+      })
+    );
+  };
   function onChangeCategory(value) {
     console.log(`selected ${value}`);
   }
@@ -288,8 +296,8 @@ export default function Product() {
   return (
     <MainLayout>
       <h2>Danh sách sản phẩm</h2>
-      <Space style={{ marginBottom: 20 }}>
-        <Button type="primary" onClick={showModal}>
+      <Space style={{ marginBottom: 20, float: "right" }}>
+        <Button value="default" onClick={showModal}>
           Tạo mới
         </Button>
       </Space>
@@ -385,7 +393,7 @@ export default function Product() {
                   { required: true, message: "Vui lòng nhập giá sản phẩm" },
                 ]}
               >
-                <Input />
+                <InputNumber />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -396,7 +404,7 @@ export default function Product() {
                   { required: true, message: "Vui lòng nhập giá khuyến mãi" },
                 ]}
               >
-                <Input />
+                <InputNumber />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -410,7 +418,7 @@ export default function Product() {
                   },
                 ]}
               >
-                <Input />
+                <InputNumber />
               </Form.Item>
             </Col>
           </Row>
@@ -649,13 +657,22 @@ export default function Product() {
           </Row>
         </Form>
       </Modal>
+      {/* modal delete*/}
+      <Modal
+        title="Bạn có chắc chắn muốn xoá sản phẩm này không?"
+        visible={visibleDelete}
+        okText="Có"
+        cancelText="Không"
+        onOk={confirmDelete}
+        onCancel={handleCancel}
+      ></Modal>
       <Table
         columns={columns}
         dataSource={state.product.items}
         pagination={false}
       />
       <Pagination
-        style={{ marginTop: 10 }}
+        style={{ marginTop: 10, float: "right" }}
         current={page}
         total={state.product.meta.total}
         onChange={onChange}

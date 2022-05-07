@@ -9,7 +9,6 @@ import {
   Input,
   Upload,
   Pagination,
-  Popconfirm,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -29,6 +28,7 @@ import { BASE_URL } from "../../constants/config";
 
 export default function Branch() {
   const [visible, setVisible] = useState(false);
+  const [visibleDelete, setVisibleDelete] = useState(false);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [images, setImages] = useState([]);
@@ -73,23 +73,13 @@ export default function Branch() {
       render: (item) => {
         return (
           <>
-            <Popconfirm
-              title="Bạn có muốn xoá bản ghi này?"
-              onConfirm={() =>
-                dispatch(
-                  deleteBranch(item.id, () => dispatch(listBranch({ page })))
-                )
-              }
-              okText="Có"
-              cancelText="Không"
-            >
-              <DeleteOutlined
-                style={{
-                  cursor: "pointer",
-                  paddingRight: 10,
-                }}
-              />
-            </Popconfirm>
+            <DeleteOutlined
+              style={{
+                cursor: "pointer",
+                paddingRight: 10,
+              }}
+              onClick={() => onClickDelete(item?.id)}
+            />
             <EditOutlined
               style={{
                 cursor: "pointer",
@@ -159,9 +149,13 @@ export default function Branch() {
         break;
     }
   };
-
+  const onClickDelete = (id) => {
+    setVisibleDelete(true);
+    setId(id);
+  };
   const handleCancel = () => {
     setVisible(false);
+    setVisibleDelete(false);
     form.resetFields();
   };
 
@@ -190,7 +184,14 @@ export default function Branch() {
   const onChangeFileList = ({ fileList: newFileList }) => {
     setImages(newFileList);
   };
-
+  const confirmDelete = () => {
+    dispatch(
+      deleteBranch(id, () => {
+        dispatch(listBranch({ page }));
+        setVisibleDelete(false);
+      })
+    );
+  };
   const props = {
     action: `${BASE_URL}/api`,
     listType: "picture",
@@ -217,8 +218,8 @@ export default function Branch() {
   return (
     <MainLayout>
       <h2>Danh sách thương hiệu</h2>
-      <Space style={{ marginBottom: 20 }}>
-        <Button type="primary" onClick={showModal}>
+      <Space style={{ marginBottom: 20, float: "right" }}>
+        <Button value="default" onClick={showModal}>
           Tạo mới
         </Button>
       </Space>
@@ -273,9 +274,22 @@ export default function Branch() {
           </Form.Item>
         </Form>
       </Modal>
+      {/* modal delete*/}
+      <Modal
+        // title="Bạn có chắc chắn muốn xoá bản ghi này không?"
+        visible={visibleDelete}
+        okText="Có"
+        cancelText="Không"
+        onOk={confirmDelete}
+        onCancel={handleCancel}
+      >
+        <h2 style={{ marginTop: "20px" }}>
+          Bạn có chắc chắn muốn xoá bản ghi này không?
+        </h2>
+      </Modal>
       <Table columns={columns} dataSource={state.items} pagination={false} />
       <Pagination
-        style={{ marginTop: 10 }}
+        style={{ marginTop: 10, float: "right" }}
         current={page}
         total={state.meta.total}
         onChange={onChange}

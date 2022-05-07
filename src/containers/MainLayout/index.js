@@ -5,10 +5,13 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import { useWindowDimensions } from "../../common/useWindowDimensions";
 import { Link, useLocation } from "react-router-dom";
 import { routers } from "../../constants/endpoint";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/actions/auth.action";
 
 const { Header, Sider, Content } = Layout;
 
@@ -19,7 +22,7 @@ export default function MainLayout({ children }) {
   const { width } = useWindowDimensions();
   const [selecedKey, setSelectedKey] = useState();
   const { pathname } = useLocation();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     width < 996 ? setCollapsed(true) : setCollapsed(false);
     width < 996 ? setMargin(80) : setMargin(200);
@@ -38,7 +41,9 @@ export default function MainLayout({ children }) {
       }
     });
   }, [pathname]);
-
+  const onClickLogout = () => {
+    dispatch(logout());
+  };
   return (
     <Layout>
       <Sider
@@ -81,8 +86,12 @@ export default function MainLayout({ children }) {
               onClick: toggle,
             }
           )}
-          <span className="profile" style={{ marginRight: marginRight }}>
-            <UserOutlined />
+          <span
+            className="profile"
+            style={{ marginRight: marginRight }}
+            onClick={onClickLogout}
+          >
+            <LogoutOutlined />
           </span>
         </Header>
         <Content

@@ -23,6 +23,7 @@ import { formatTime } from "../../common/common";
 
 export default function Category() {
   const [visible, setVisible] = useState(false);
+  const [visibleDelete, setVisibleDelete] = useState(false);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [id, setId] = useState();
@@ -66,25 +67,14 @@ export default function Category() {
       render: (item) => {
         return (
           <>
-            <Popconfirm
-              title="Bạn có muốn xoá bản ghi này?"
-              onConfirm={() =>
-                dispatch(
-                  deleteCategory(item.id, () =>
-                    dispatch(listCategory({ page }))
-                  )
-                )
-              }
-              okText="Có"
-              cancelText="Không"
-            >
-              <DeleteOutlined
-                style={{
-                  cursor: "pointer",
-                  paddingRight: 10,
-                }}
-              />
-            </Popconfirm>
+            <DeleteOutlined
+              style={{
+                cursor: "pointer",
+                paddingRight: 10,
+              }}
+              onClick={() => onClickDelete(item?.id)}
+            />
+
             <EditOutlined
               style={{
                 cursor: "pointer",
@@ -146,6 +136,7 @@ export default function Category() {
 
   const handleCancel = () => {
     setVisible(false);
+    setVisibleDelete(false);
     form.resetFields();
   };
 
@@ -172,12 +163,23 @@ export default function Category() {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
-
+  const onClickDelete = (id) => {
+    setVisibleDelete(true);
+    setId(id);
+  };
+  const confirmDelete = () => {
+    dispatch(
+      deleteCategory(id, () => {
+        dispatch(listCategory({ page }));
+        setVisibleDelete(false);
+      })
+    );
+  };
   return (
     <MainLayout>
       <h2>Danh sách danh mục</h2>
-      <Space style={{ marginBottom: 20 }}>
-        <Button type="primary" onClick={showModal}>
+      <Space style={{ marginBottom: 20, float: "right" }}>
+        <Button value="default" onClick={showModal}>
           Tạo mới
         </Button>
       </Space>
@@ -220,9 +222,22 @@ export default function Category() {
           </Form.Item>
         </Form>
       </Modal>
+      {/* modal delete*/}
+      <Modal
+        // title="Bạn có chắc chắn muốn xoá bản ghi này không?"
+        visible={visibleDelete}
+        okText="Có"
+        cancelText="Không"
+        onOk={confirmDelete}
+        onCancel={handleCancel}
+      >
+        <h2 style={{ marginTop: "20px" }}>
+          Bạn có chắc chắn muốn xoá bản ghi này không?
+        </h2>
+      </Modal>
       <Table columns={columns} dataSource={state.items} pagination={false} />
       <Pagination
-        style={{ marginTop: 10 }}
+        style={{ marginTop: 10, float: "right" }}
         current={page}
         total={state.meta.total}
         onChange={onChange}

@@ -30,6 +30,7 @@ import { CouponStatusEnum } from "./coupon-status.constant";
 
 export default function Coupon() {
   const [visible, setVisible] = useState(false);
+  const [visibleDelete, setVisibleDelete] = useState(false);
   const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [id, setId] = useState();
@@ -81,23 +82,13 @@ export default function Coupon() {
       render: (item) => {
         return item.status === CouponStatusEnum.WaitingConfirm ? (
           <>
-            <Popconfirm
-              title="Bạn có muốn xoá bản ghi này?"
-              onConfirm={() =>
-                dispatch(
-                  deleteCoupon(item.id, () => dispatch(listCoupon({ page })))
-                )
-              }
-              okText="Có"
-              cancelText="Không"
-            >
-              <DeleteOutlined
-                style={{
-                  cursor: "pointer",
-                  paddingRight: 10,
-                }}
-              />
-            </Popconfirm>
+            <DeleteOutlined
+              style={{
+                cursor: "pointer",
+                paddingRight: 10,
+              }}
+              onClick={() => onClickDelete(id)}
+            />
 
             <Popconfirm
               title="Bạn có muốn thay đổi trạng thái?"
@@ -177,9 +168,23 @@ export default function Coupon() {
 
   const handleCancel = () => {
     setVisible(false);
+    setVisibleDelete(false);
     form.resetFields();
   };
-
+  const onClickDelete = (id) => {
+    setVisibleDelete(true);
+    setId(id);
+  };
+  const confirmDelete = () => {
+    dispatch(
+      dispatch(
+        deleteCoupon(id, () => {
+          dispatch(listCoupon({ page }));
+          setVisibleDelete(false);
+        })
+      )
+    );
+  };
   const onFinish = (values) => {
     switch (mode) {
       case "CREATE":
@@ -205,8 +210,8 @@ export default function Coupon() {
   return (
     <MainLayout>
       <h2>Danh sách mã giảm giá</h2>
-      <Space style={{ marginBottom: 20 }}>
-        <Button type="primary" onClick={showModal}>
+      <Space style={{ marginBottom: 20, float: "right" }}>
+        <Button value="default" onClick={showModal}>
           Tạo mới
         </Button>
       </Space>
@@ -269,9 +274,22 @@ export default function Coupon() {
           </Form.Item>
         </Form>
       </Modal>
+      {/* modal delete*/}
+      <Modal
+        // title="Bạn có chắc chắn muốn xoá bản ghi này không?"
+        visible={visibleDelete}
+        okText="Có"
+        cancelText="Không"
+        onOk={confirmDelete}
+        onCancel={handleCancel}
+      >
+        <h2 style={{ marginTop: "20px" }}>
+          Bạn có chắc chắn muốn xoá bản ghi này không?
+        </h2>
+      </Modal>
       <Table columns={columns} dataSource={state.items} pagination={false} />
       <Pagination
-        style={{ marginTop: 10 }}
+        style={{ marginTop: 10, float: "right" }}
         current={page}
         total={state.meta.total}
         onChange={onChange}

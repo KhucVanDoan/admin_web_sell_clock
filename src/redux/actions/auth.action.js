@@ -30,7 +30,14 @@ export const login = (user) => {
     }
   };
 };
-
+export const logout = (onSuccess) => {
+  return async (dispatch) => {
+    dispatch({
+      type: types.LOGOUT,
+      onSuccess,
+    });
+  };
+};
 export const getProfile = () => {
   return async (dispatch) => {
     try {
