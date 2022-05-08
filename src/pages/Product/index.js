@@ -173,6 +173,7 @@ export default function Product() {
     setId(id);
   };
   const showModal = () => {
+    setFileList([]);
     dispatch(listCategory({ page }));
     dispatch(listBranch({ page }));
     dispatch(listSpecification({ page }));
@@ -234,19 +235,31 @@ export default function Product() {
       case "CREATE":
         dispatch(
           createProduct(
-            { ...values, description: values.description?.toHTML() },
+            {
+              ...values,
+              description: values.description?.toHTML(),
+              price: +values?.price,
+              salePrice: +values?.salePrice,
+            },
             () => dispatch(listProduct({ page }))
           )
         );
         break;
       case "UPDATE":
+        console.log("values", {
+          ...values,
+          description: values.description.toHTML(),
+        });
         if (!values.images?.length) {
           values.images = { fileList };
         }
         dispatch(
           updateProduct(
             id,
-            { ...values, description: values.description.toHTML() },
+            {
+              ...values,
+              description: values.description.toHTML(),
+            },
             () => dispatch(listProduct({ page }))
           )
         );
@@ -589,7 +602,7 @@ export default function Product() {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Số lượng" name="quantity">
+              <Form.Item label="Số lượng" name="stockQuantity">
                 {state.product.item?.stockQuantity}
               </Form.Item>
             </Col>

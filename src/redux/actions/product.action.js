@@ -79,10 +79,11 @@ export const updateProduct = (id, data, cb) => {
       const form = new FormData();
       form.append("name", data.name);
       form.append("description", data.description);
-      form.append("shortDescription", data.shortDescription);
       form.append("branchId", data.branchId);
       form.append("categoryId", data.categoryId);
-      form.append("productVersions", JSON.stringify(data.productVersions));
+      form.append("price", data.price);
+      form.append("salePrice", data.salePrice);
+      form.append("stockQuantity", data.stockQuantity);
       form.append(
         "specificationDetails",
         JSON.stringify(data.specificationDetails)

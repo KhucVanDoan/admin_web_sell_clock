@@ -5,6 +5,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
+  AuditOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import { useWindowDimensions } from "../../common/useWindowDimensions";
@@ -66,7 +67,7 @@ export default function MainLayout({ children }) {
         </div>
         <Menu theme="light" mode="inline" selectedKeys={[`${selecedKey}`]}>
           {routers.map((router, index) => (
-            <Menu.Item key={index} icon={<UserOutlined />}>
+            <Menu.Item key={index} icon={<AuditOutlined />}>
               <Link to={router.endpoint} onClick={() => setSelectedKey(index)}>
                 {router.text}
               </Link>
