@@ -274,7 +274,7 @@ export default function Order() {
             <Row gutter={[16, 16]}>
               <Col span={12}>
                 <Form.Item
-                  label="Cửa hàng"
+                  label="Cửa hàng:"
                   name="categoryId"
                   style={{
                     marginBottom: 0,
@@ -283,7 +283,7 @@ export default function Order() {
                   <b>Shop Xwatch</b>
                 </Form.Item>
                 <Form.Item
-                  label="Mã đơn hàng"
+                  label="Mã đơn hàng:"
                   name="categoryId"
                   style={{
                     marginBottom: 0,
@@ -292,7 +292,7 @@ export default function Order() {
                   #{state.order.item?.id}
                 </Form.Item>
                 <Form.Item
-                  label="Trạng thái đơn hàng"
+                  label="Trạng thái đơn hàng:"
                   name="categoryId"
                   style={{
                     marginBottom: 0,
@@ -304,7 +304,7 @@ export default function Order() {
 
               <Col span={12}>
                 <Form.Item
-                  label="Người mua"
+                  label="Người mua:"
                   name="name"
                   style={{
                     marginBottom: 0,
@@ -313,7 +313,7 @@ export default function Order() {
                   {state.order.item?.user?.fullname}
                 </Form.Item>
                 <Form.Item
-                  label="Số điện thoại"
+                  label="Số điện thoại:"
                   name="name"
                   style={{
                     marginBottom: 0,
@@ -322,7 +322,7 @@ export default function Order() {
                   {state.order.item?.phone}
                 </Form.Item>
                 <Form.Item
-                  label="Địa chỉ"
+                  label="Địa chỉ:"
                   name="name"
                   style={{
                     marginBottom: 0,
@@ -342,7 +342,7 @@ export default function Order() {
               <Col span={12}></Col>
               <Col span={12}>
                 <Form.Item
-                  label="Tổng số tiền"
+                  label="Tổng số tiền:"
                   name="name"
                   style={{
                     marginBottom: 0,
@@ -359,7 +359,7 @@ export default function Order() {
                   )}
                 </Form.Item>
                 <Form.Item
-                  label="Mã giảm giá"
+                  label="Mã giảm giá:"
                   name="name"
                   style={{
                     marginBottom: 0,
@@ -370,7 +370,7 @@ export default function Order() {
                     : "Không"}
                 </Form.Item>
                 <Form.Item
-                  label="Thanh toán"
+                  label="Thanh toán:"
                   name="name"
                   style={{
                     marginBottom: 0,
