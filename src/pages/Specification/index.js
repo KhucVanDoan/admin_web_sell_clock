@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MainLayout from "../../containers/MainLayout";
-import {
-  Button,
-  Modal,
-  Space,
-  Table,
-  Form,
-  Input,
-  Pagination,
-  Popconfirm,
-} from "antd";
+import { Button, Modal, Space, Table, Form, Input, Pagination } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createSpecification,
@@ -19,11 +10,12 @@ import {
   updateSpecification,
 } from "../../redux/actions/specification.action";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import Search from "antd/lib/input/Search";
 
 export default function Specification() {
   const [visible, setVisible] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
-  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({ page: 1 });
   const [mode, setMode] = useState();
   const [id, setId] = useState();
   const [form] = Form.useForm();
@@ -31,25 +23,17 @@ export default function Specification() {
   const state = useSelector((state) => state.specification);
 
   useEffect(() => {
-    dispatch(listSpecification({ page }));
-  }, [dispatch, page]);
+    dispatch(listSpecification(filters));
+  }, [dispatch, filters]);
 
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
-      sorter: {
-        compare: (a, b) => a - b,
-        multiple: 10,
-      },
     },
     {
-      title: "Loại thông số",
+      title: "Loại thông tin",
       dataIndex: "name",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Hành động",
@@ -79,7 +63,10 @@ export default function Specification() {
   ];
 
   const onChange = (page) => {
-    setPage(page);
+    setFilters({
+      ...filters,
+      page: page,
+    });
   };
 
   useEffect(() => {
@@ -104,9 +91,9 @@ export default function Specification() {
   const showTitle = (mode) => {
     switch (mode) {
       case "CREATE":
-        return "Tạo mới màu sắc";
+        return "Tạo mới thông tin sản phẩm";
       case "UPDATE":
-        return "Cập nhật màu sắc";
+        return "Cập nhật thông tin sản phẩm";
       default:
         break;
     }
@@ -134,14 +121,14 @@ export default function Specification() {
       case "CREATE":
         dispatch(
           createSpecification(values, () =>
-            dispatch(listSpecification({ page }))
+            dispatch(listSpecification(filters?.page))
           )
         );
         break;
       case "UPDATE":
         dispatch(
           updateSpecification(id, values, () =>
-            dispatch(listSpecification({ page }))
+            dispatch(listSpecification(filters?.page))
           )
         );
         break;
@@ -163,14 +150,23 @@ export default function Specification() {
   const confirmDelete = () => {
     dispatch(
       deleteSpecification(id, () => {
-        dispatch(listSpecification({ page }));
+        dispatch(listSpecification(filters?.page));
         setVisibleDelete(false);
       })
     );
   };
+  const handleSearch = (value) => setFilters({ ...filters, keyword: value });
+
   return (
     <MainLayout>
-      <h2>Danh sách thông số kỹ thuật</h2>
+      <h2>Danh sách thông số </h2>
+      <Space style={{ marginBottom: 20 }}>
+        <Search
+          placeholder="Tìm kiếm...."
+          onSearch={handleSearch}
+          style={{ width: 300, height: "40px" }}
+        />
+      </Space>
       <Space style={{ marginBottom: 20, float: "right" }}>
         <Button value="default" onClick={showModal}>
           Tạo mới
@@ -196,9 +192,7 @@ export default function Specification() {
           <Form.Item
             label="Thông số kỹ thuật"
             name="name"
-            rules={[
-              { required: true, message: "Vui lòng nhập thông số kỹ thuật" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng nhập thông tin" }]}
           >
             <Input />
           </Form.Item>
@@ -226,7 +220,7 @@ export default function Specification() {
       <Table columns={columns} dataSource={state.items} pagination={false} />
       <Pagination
         style={{ marginTop: 10, float: "right" }}
-        current={page}
+        current={filters?.page}
         total={state.meta.total}
         onChange={onChange}
       />

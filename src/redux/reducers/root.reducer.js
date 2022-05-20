@@ -4,9 +4,9 @@ import branchReducer from "./branch.reducer";
 import categoryReducer from "./category.reducer";
 import colorReducer from "./color.reducer";
 import couponReducer from "./coupon.reducer";
+import dashboardReducer from "./dashboard";
 import orderReducer from "./order.reducer";
 import productReducer from "./product.reducer";
-
 import specificationReducer from "./specification.reducer";
 import storageReducer from "./storage.reducer";
 import userReducer from "./user.reducer";
@@ -19,10 +19,10 @@ const rootReducer = combineReducers({
   coupon: couponReducer,
   storage: storageReducer,
   specification: specificationReducer,
-
   product: productReducer,
   user: userReducer,
   order: orderReducer,
+  dashboard: dashboardReducer,
 });
 
 export default rootReducer;

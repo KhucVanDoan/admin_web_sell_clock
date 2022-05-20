@@ -4,6 +4,7 @@ const initialState = {
   items: [],
   meta: {},
   item: {},
+  productSells: [],
 };
 
 const productReducer = (state = initialState, action) => {
@@ -22,6 +23,12 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         item: action.data,
+      };
+    case types.LIST_PRODUCT_SELL:
+      return {
+        ...state,
+        productSells: action.data.items,
+        meta: action.data.meta,
       };
     default:
       return state;

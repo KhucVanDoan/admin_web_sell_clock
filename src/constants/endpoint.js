@@ -14,10 +14,10 @@ export const Endpoint = {
 };
 
 export const routers = [
-  // {
-  //   endpoint: Endpoint.DASHBOARD,
-  //   text: "Dashboard",
-  // },
+  {
+    endpoint: Endpoint.DASHBOARD,
+    text: "Thống kê",
+  },
   {
     endpoint: Endpoint.BRANCH,
     text: "Quản lý thương hiệu",

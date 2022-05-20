@@ -1,6 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import MainLayout from "../../containers/MainLayout";
-import { Modal, Table, Form, Pagination, Popconfirm, Row, Col } from "antd";
+import {
+  Modal,
+  Table,
+  Form,
+  Pagination,
+  Popconfirm,
+  Row,
+  Col,
+  Button,
+  Space,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CheckSquareOutlined,
@@ -14,17 +24,19 @@ import {
   listOrder,
 } from "../../redux/actions/order.action";
 import { OrderStatus, OrderStatusEnum } from "./order-status.const";
-
+import { ROOT_URL } from "../../constants/config";
+import { useReactToPrint } from "react-to-print";
+import Search from "antd/lib/input/Search";
 export default function Order() {
   const [visible, setVisible] = useState(false);
-  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({ page: 1 });
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
 
   useEffect(() => {
-    dispatch(listOrder({ page }));
-  }, [dispatch, page]);
+    dispatch(listOrder(filters));
+  }, [dispatch, filters]);
 
   const columns = [
     {
@@ -134,43 +146,34 @@ export default function Order() {
   const columnsDetail = [
     {
       title: "Mã sản phẩm",
-      dataIndex: "productId",
-      sorter: {
-        compare: (a, b) => a - b,
-        multiple: 10,
-      },
+      dataIndex: "itemId",
+    },
+    {
+      title: "Ảnh",
+      render: (record) => (
+        <img
+          src={`${ROOT_URL}/${record?.images[0]?.url}`}
+          alt="ảnh sản phẩm"
+          style={{ width: "100px" }}
+        />
+      ),
     },
     {
       title: "Tên sản phẩm",
-      dataIndex: "productName",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
+      dataIndex: "itemName",
     },
     {
       title: "Giá",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
       render: (record) =>
         formatMoney(record.orderPrice || record.salePrice || record.price),
     },
     {
       title: "Số lượng",
       dataIndex: "quantity",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
     },
     {
       title: "Thành tiền",
-      sorter: {
-        compare: (a, b) => a.chinese - b.chinese,
-        multiple: 3,
-      },
+
       render: (record) =>
         formatMoney(
           (record.orderPrice || record.salePrice || record.price) *
@@ -180,9 +183,11 @@ export default function Order() {
   ];
 
   const onChange = (page) => {
-    setPage(page);
+    setFilters({
+      ...filters,
+      page: page,
+    });
   };
-
   const showModalDetail = (id) => {
     setVisible(true);
     dispatch(detailOrder(id));
@@ -218,22 +223,36 @@ export default function Order() {
 
     dispatch(
       changeStatusOrder(item.id, { status }, () =>
-        dispatch(listOrder({ page }))
+        dispatch(listOrder(filters?.page))
       )
     );
   };
+  const componentRef = useRef();
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    copyStyles: true,
+  });
+  const handleSearch = (value) => setFilters({ ...filters, keyword: value });
 
   return (
     <MainLayout>
       <h2>Danh sách đơn hàng</h2>
+      <Space style={{ marginBottom: 20 }}>
+        <Search
+          placeholder="Tìm kiếm...."
+          onSearch={handleSearch}
+          style={{ width: 300, height: "40px" }}
+        />
+      </Space>
       <Table
         columns={columns}
         dataSource={state.order.items}
         pagination={false}
       />
       <Pagination
-        style={{ marginTop: 10 }}
-        current={page}
+        style={{ marginTop: 10, float: "right" }}
+        current={filters?.page}
         total={state.order.meta.total}
         onChange={onChange}
       />
@@ -241,119 +260,145 @@ export default function Order() {
       <Modal
         title="Chi tiết đơn hàng"
         visible={visible}
-        // onOk={handleOk}
-        // confirmLoading={confirmLoading}
         onCancel={handleCancel}
         footer={false}
         width={1000}
       >
         <Form name="basic" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
+          <div
+            ref={componentRef}
+            style={{
+              padding: 20,
+            }}
+          >
+            <Row gutter={[16, 16]}>
+              <Col span={12}>
+                <Form.Item
+                  label="Cửa hàng"
+                  name="categoryId"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  <b>Shop Xwatch</b>
+                </Form.Item>
+                <Form.Item
+                  label="Mã đơn hàng"
+                  name="categoryId"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  #{state.order.item?.id}
+                </Form.Item>
+                <Form.Item
+                  label="Trạng thái đơn hàng"
+                  name="categoryId"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {OrderStatus[state.order.item?.status]}
+                </Form.Item>
+              </Col>
+
+              <Col span={12}>
+                <Form.Item
+                  label="Người mua"
+                  name="name"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {state.order.item?.user?.fullname}
+                </Form.Item>
+                <Form.Item
+                  label="Số điện thoại"
+                  name="name"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {state.order.item?.phone}
+                </Form.Item>
+                <Form.Item
+                  label="Địa chỉ"
+                  name="name"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {state.order.item?.address}
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <h3>Danh sách sản phẩm</h3>
+                <Table
+                  columns={columnsDetail}
+                  dataSource={state.order.item.orderDetails}
+                  pagination={false}
+                />
+              </Col>
+              <Col span={12}></Col>
+              <Col span={12}>
+                <Form.Item
+                  label="Tổng số tiền"
+                  name="name"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {formatMoney(
+                    state.order.item?.orderDetails?.reduce((total, item) => {
+                      return (
+                        total +
+                        (item?.orderPrice || item?.salePrice || item?.price) *
+                          item.quantity
+                      );
+                    }, 0)
+                  )}
+                </Form.Item>
+                <Form.Item
+                  label="Mã giảm giá"
+                  name="name"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {state.order.item?.coupon?.id
+                    ? `${state.order.item?.coupon?.code} - Giảm ${state.order.item?.coupon?.value}%`
+                    : "Không"}
+                </Form.Item>
+                <Form.Item
+                  label="Thanh toán"
+                  name="name"
+                  style={{
+                    marginBottom: 0,
+                  }}
+                >
+                  {formatMoney(
+                    (state.order.item?.orderDetails?.reduce((total, item) => {
+                      return (
+                        total +
+                        (item?.orderPrice || item?.salePrice || item?.price) *
+                          item.quantity
+                      );
+                    }, 0) *
+                      (100 - state.order.item?.coupon?.value || 0)) /
+                      100
+                  )}
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
           <Row gutter={[16, 16]}>
-            <Col span={12}>
+            <Col span={24} style={{ float: "right" }}>
               <Form.Item
-                label="Mã đơn hàng"
-                name="categoryId"
-                style={{
-                  marginBottom: 0,
-                }}
+                wrapperCol={{ offset: 20, span: 16, marginTop: "20px" }}
               >
-                #{state.order.item?.id}
-              </Form.Item>
-              <Form.Item
-                label="Trạng thái đơn hàng"
-                name="categoryId"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {OrderStatus[state.order.item?.status]}
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="Người mua"
-                name="name"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {state.order.item?.user?.fullname}
-              </Form.Item>
-              <Form.Item
-                label="Số điện thoại"
-                name="name"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {state.order.item?.phone}
-              </Form.Item>
-              <Form.Item
-                label="Địa chỉ"
-                name="name"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {state.order.item?.address}
-              </Form.Item>
-            </Col>
-            <Col span={24}>
-              <h3>Danh sách sản phẩm</h3>
-              <Table
-                columns={columnsDetail}
-                dataSource={state.order.item.orderDetails}
-                pagination={false}
-              />
-            </Col>
-            <Col span={12}></Col>
-            <Col span={12}>
-              <Form.Item
-                label="Tổng số tiền"
-                name="name"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {formatMoney(
-                  state.order.item?.orderDetails?.reduce((total, item) => {
-                    return (
-                      total +
-                      (item?.orderPrice || item?.salePrice || item?.price) *
-                        item.quantity
-                    );
-                  }, 0)
-                )}
-              </Form.Item>
-              <Form.Item
-                label="Mã giảm giá"
-                name="name"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {state.order.item?.coupon?.id
-                  ? `${state.order.item?.coupon?.code} - Giảm ${state.order.item?.coupon?.value}%`
-                  : "Không"}
-              </Form.Item>
-              <Form.Item
-                label="Thanh toán"
-                name="name"
-                style={{
-                  marginBottom: 0,
-                }}
-              >
-                {formatMoney(
-                  (state.order.item?.orderDetails?.reduce((total, item) => {
-                    return (
-                      total +
-                      (item?.orderPrice || item?.salePrice || item?.price) *
-                        item.quantity
-                    );
-                  }, 0) *
-                    (100 - state.order.item?.coupon?.value || 0)) /
-                    100
-                )}
+                <Button type="primary" onClick={handlePrint}>
+                  In hoá đơn
+                </Button>
               </Form.Item>
             </Col>
           </Row>

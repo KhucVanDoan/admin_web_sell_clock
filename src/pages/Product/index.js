@@ -9,12 +9,10 @@ import {
   Input,
   Upload,
   Pagination,
-  Popconfirm,
   Row,
   Col,
   Select,
   InputNumber,
-  Tabs,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { listBranch } from "../../redux/actions/branch.action";
@@ -38,27 +36,28 @@ import { listSpecification } from "../../redux/actions/specification.action";
 import { BASE_URL } from "../../constants/config";
 import BraftEditor from "braft-editor";
 import parse from "html-react-parser";
-
+import { ROOT_URL } from "../../constants/config";
+import Search from "antd/lib/input/Search";
 const { Option } = Select;
 
 export default function Product() {
   const [visible, setVisible] = useState(false);
   const [visibleDetail, setVisibleDetail] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
-  const [page, setPage] = useState(1);
   const [mode, setMode] = useState();
   const [id, setId] = useState();
   const [fileList, setFileList] = useState([]);
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [previewTitle, setPreviewTitle] = useState("");
+  const [filters, setFilters] = useState({ page: 1 });
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
 
   useEffect(() => {
-    dispatch(listProduct({ page }));
-  }, [dispatch, page]);
+    dispatch(listProduct(filters));
+  }, [dispatch, filters]);
 
   const controls = [
     "bold",
@@ -75,6 +74,17 @@ export default function Product() {
     {
       title: "ID",
       dataIndex: "id",
+    },
+    {
+      title: "Ảnh",
+      dataIndex: "itemImages",
+      render: (record) => (
+        <img
+          src={`${ROOT_URL}/${record[0]?.url}`}
+          alt="hi"
+          style={{ width: "70px" }}
+        />
+      ),
     },
     {
       title: "Tên sản phẩm",
@@ -96,12 +106,7 @@ export default function Product() {
 
       render: (record) => formatTime(record),
     },
-    {
-      title: "Ngày cập nhật",
-      dataIndex: "updatedAt",
 
-      render: (record) => formatTime(record),
-    },
     {
       title: "Hành động",
       dataIndex: "",
@@ -138,7 +143,10 @@ export default function Product() {
   ];
 
   const onChange = (page) => {
-    setPage(page);
+    setFilters({
+      ...filters,
+      page: page,
+    });
   };
 
   useEffect(() => {
@@ -174,18 +182,18 @@ export default function Product() {
   };
   const showModal = () => {
     setFileList([]);
-    dispatch(listCategory({ page }));
-    dispatch(listBranch({ page }));
-    dispatch(listSpecification({ page }));
+    dispatch(listCategory({ filters }));
+    dispatch(listBranch({ filters }));
+    dispatch(listSpecification({ filters }));
     form.resetFields();
     setMode("CREATE");
     setVisible(true);
   };
 
   const showModalUpdate = (id) => {
-    dispatch(listCategory({ page }));
-    dispatch(listBranch({ page }));
-    dispatch(listSpecification({ page }));
+    dispatch(listCategory({ filters }));
+    dispatch(listBranch({ filters }));
+    dispatch(listSpecification({ filters }));
     setId(id);
     setMode("UPDATE");
     setVisible(true);
@@ -241,7 +249,7 @@ export default function Product() {
               price: +values?.price,
               salePrice: +values?.salePrice,
             },
-            () => dispatch(listProduct({ page }))
+            () => dispatch(listProduct({ filters }))
           )
         );
         break;
@@ -260,7 +268,7 @@ export default function Product() {
               ...values,
               description: values.description.toHTML(),
             },
-            () => dispatch(listProduct({ page }))
+            () => dispatch(listProduct({ filters }))
           )
         );
         break;
@@ -281,7 +289,7 @@ export default function Product() {
   const confirmDelete = () => {
     dispatch(
       deleteProduct(id, () => {
-        dispatch(listProduct({ page }));
+        dispatch(listProduct({ filters }));
         setVisibleDelete(false);
       })
     );
@@ -305,10 +313,18 @@ export default function Product() {
       file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
     );
   };
+  const handleSearch = (value) => setFilters({ ...filters, keyword: value });
 
   return (
     <MainLayout>
       <h2>Danh sách sản phẩm</h2>
+      <Space style={{ marginBottom: 20 }}>
+        <Search
+          placeholder="Tìm kiếm...."
+          onSearch={handleSearch}
+          style={{ width: 300 }}
+        />
+      </Space>
       <Space style={{ marginBottom: 20, float: "right" }}>
         <Button value="default" onClick={showModal}>
           Tạo mới
@@ -406,7 +422,12 @@ export default function Product() {
                   { required: true, message: "Vui lòng nhập giá sản phẩm" },
                 ]}
               >
-                <InputNumber />
+                <InputNumber
+                  formatter={(value) =>
+                    ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -417,7 +438,12 @@ export default function Product() {
                   { required: true, message: "Vui lòng nhập giá khuyến mãi" },
                 ]}
               >
-                <InputNumber />
+                <InputNumber
+                  formatter={(value) =>
+                    ` ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -686,7 +712,7 @@ export default function Product() {
       />
       <Pagination
         style={{ marginTop: 10, float: "right" }}
-        current={page}
+        current={filters?.page}
         total={state.product.meta.total}
         onChange={onChange}
       />

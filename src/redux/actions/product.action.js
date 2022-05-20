@@ -16,7 +16,6 @@ export const listProduct = (query) => {
         type: types.LIST_PRODUCT,
         data: response.data,
       });
-      console.log("hahahah");
     } catch (error) {
       console.log(error?.message || error);
       notification.open({
@@ -152,6 +151,23 @@ export const detailProduct = (id) => {
       const response = await detail(id);
       dispatch({
         type: types.DETAIL_PRODUCT,
+        data: response.data,
+      });
+    } catch (error) {
+      console.log(error?.message || error);
+      notification.open({
+        message: "Thất bại",
+        description: error?.message || error,
+      });
+    }
+  };
+};
+export const listProductSell = (query) => {
+  return async (dispatch) => {
+    try {
+      const response = await list(query);
+      dispatch({
+        type: types.LIST_PRODUCT_SELL,
         data: response.data,
       });
     } catch (error) {

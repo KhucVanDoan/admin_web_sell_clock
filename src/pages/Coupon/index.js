@@ -27,11 +27,12 @@ import {
 } from "@ant-design/icons";
 import { formatTime } from "../../common/common";
 import { CouponStatusEnum } from "./coupon-status.constant";
+import Search from "antd/lib/input/Search";
 
 export default function Coupon() {
   const [visible, setVisible] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
-  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({ page: 1 });
   const [mode, setMode] = useState();
   const [id, setId] = useState();
   const [form] = Form.useForm();
@@ -39,8 +40,8 @@ export default function Coupon() {
   const state = useSelector((state) => state.coupon);
 
   useEffect(() => {
-    dispatch(listCoupon({ page }));
-  }, [dispatch, page]);
+    dispatch(listCoupon(filters));
+  }, [dispatch, filters]);
 
   const columns = [
     {
@@ -117,10 +118,13 @@ export default function Coupon() {
     },
   ];
   const handleConfirmCoupon = (item) => {
-    dispatch(confirmCoupon(item.id, () => dispatch(listCoupon({ page }))));
+    dispatch(confirmCoupon(item.id, () => dispatch(listCoupon(filters))));
   };
   const onChange = (page) => {
-    setPage(page);
+    setFilters({
+      ...filters,
+      page: page,
+    });
   };
 
   useEffect(() => {
@@ -179,7 +183,7 @@ export default function Coupon() {
     dispatch(
       dispatch(
         deleteCoupon(id, () => {
-          dispatch(listCoupon({ page }));
+          dispatch(listCoupon(filters));
           setVisibleDelete(false);
         })
       )
@@ -188,12 +192,10 @@ export default function Coupon() {
   const onFinish = (values) => {
     switch (mode) {
       case "CREATE":
-        dispatch(createCoupon(values, () => dispatch(listCoupon({ page }))));
+        dispatch(createCoupon(values, () => dispatch(listCoupon(filters))));
         break;
       case "UPDATE":
-        dispatch(
-          updateCoupon(id, values, () => dispatch(listCoupon({ page })))
-        );
+        dispatch(updateCoupon(id, values, () => dispatch(listCoupon(filters))));
         break;
       default:
         break;
@@ -206,10 +208,18 @@ export default function Coupon() {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+  const handleSearch = (value) => setFilters({ ...filters, keyword: value });
 
   return (
     <MainLayout>
       <h2>Danh sách mã giảm giá</h2>
+      <Space style={{ marginBottom: 20 }}>
+        <Search
+          placeholder="Tìm kiếm...."
+          onSearch={handleSearch}
+          style={{ width: 300, height: "40px" }}
+        />
+      </Space>
       <Space style={{ marginBottom: 20, float: "right" }}>
         <Button value="default" onClick={showModal}>
           Tạo mới
@@ -290,7 +300,7 @@ export default function Coupon() {
       <Table columns={columns} dataSource={state.items} pagination={false} />
       <Pagination
         style={{ marginTop: 10, float: "right" }}
-        current={page}
+        current={filters?.page}
         total={state.meta.total}
         onChange={onChange}
       />

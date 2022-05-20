@@ -3,12 +3,12 @@ import MainLayout from "../../containers/MainLayout";
 import {
   Button,
   Modal,
-  Space,
   Table,
   Form,
   Input,
   Upload,
   Pagination,
+  Space,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,11 +25,12 @@ import {
 } from "@ant-design/icons";
 import { formatTime } from "../../common/common";
 import { BASE_URL } from "../../constants/config";
+import Search from "antd/lib/input/Search";
 
 export default function Branch() {
   const [visible, setVisible] = useState(false);
   const [visibleDelete, setVisibleDelete] = useState(false);
-  const [page, setPage] = useState(1);
+  const [filters, setFilters] = useState({ page: 1 });
   const [mode, setMode] = useState();
   const [images, setImages] = useState([]);
   const [id, setId] = useState();
@@ -38,8 +39,8 @@ export default function Branch() {
   const state = useSelector((state) => state.branch);
 
   useEffect(() => {
-    dispatch(listBranch({ page }));
-  }, [dispatch, page]);
+    dispatch(listBranch(filters));
+  }, [dispatch, filters]);
 
   const columns = [
     {
@@ -93,7 +94,10 @@ export default function Branch() {
   ];
 
   const onChange = (page) => {
-    setPage(page);
+    setFilters({
+      ...filters,
+      page: page,
+    });
   };
 
   useEffect(() => {
@@ -162,12 +166,10 @@ export default function Branch() {
   const onFinish = (values) => {
     switch (mode) {
       case "CREATE":
-        dispatch(createBranch(values, () => dispatch(listBranch({ page }))));
+        dispatch(createBranch(values, () => dispatch(listBranch(filters))));
         break;
       case "UPDATE":
-        dispatch(
-          updateBranch(id, values, () => dispatch(listBranch({ page })))
-        );
+        dispatch(updateBranch(id, values, () => dispatch(listBranch(filters))));
         break;
       default:
         break;
@@ -187,7 +189,7 @@ export default function Branch() {
   const confirmDelete = () => {
     dispatch(
       deleteBranch(id, () => {
-        dispatch(listBranch({ page }));
+        dispatch(listBranch(filters));
         setVisibleDelete(false);
       })
     );
@@ -214,10 +216,18 @@ export default function Branch() {
       });
     },
   };
+  const handleSearch = (value) => setFilters({ ...filters, keyword: value });
 
   return (
     <MainLayout>
       <h2>Danh sách thương hiệu</h2>
+      <Space style={{ marginBottom: 20 }}>
+        <Search
+          placeholder="Tìm kiếm...."
+          onSearch={handleSearch}
+          style={{ width: 300 }}
+        />
+      </Space>
       <Space style={{ marginBottom: 20, float: "right" }}>
         <Button value="default" onClick={showModal}>
           Tạo mới
@@ -290,7 +300,7 @@ export default function Branch() {
       <Table columns={columns} dataSource={state.items} pagination={false} />
       <Pagination
         style={{ marginTop: 10, float: "right" }}
-        current={page}
+        current={filters?.page}
         total={state.meta.total}
         onChange={onChange}
       />

@@ -10,4 +10,5 @@ export const APIEnum = {
   PRODUCT: "/item",
   USER: "/user",
   ORDER: "/order",
+  DASHBOARD: "/dashboard",
 };
